@@ -1,6 +1,7 @@
 import WorkflowNode from '@/components/nodes/workflow-node';
 import { WorkflowNodeProps, AppNode } from '..';
 import { useAppStore } from '@/store/app-store';
+import { useStrudelStore } from '@/store/strudel-store';
 import { AccordionControls } from '@/components/accordion-controls';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -79,6 +80,7 @@ function ArpeggioVisualizer({
 
 export function ArpeggiatorNode({ id, data, type }: WorkflowNodeProps) {
   const updateNodeData = useAppStore((state) => state.updateNodeData);
+  const genre = useStrudelStore((state) => state.genre);
 
   // Use node data directly with defaults
   const selectedPattern = data.selectedPattern || '';
@@ -114,6 +116,7 @@ export function ArpeggiatorNode({ id, data, type }: WorkflowNodeProps) {
               updateNodeData(id, { selectedChordType: scale }),
             octave,
             onOctaveChange: (oct) => updateNodeData(id, { octave: oct }),
+            genre,
           }}
         >
           <div className="flex flex-col gap-2">

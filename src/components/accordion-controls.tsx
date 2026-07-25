@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { KEY_OPTIONS, SCALE_TYPE_OPTIONS } from '@/data/sounds';
+import { isKeyMatch, isScaleMatch } from '@/data/genres';
 
 export interface KeyScaleOctaveControlsProps {
   selectedKey: string;
@@ -26,6 +27,7 @@ export interface KeyScaleOctaveControlsProps {
   showScale?: boolean;
   showOctave?: boolean;
   allowedScales?: string[];
+  genre?: string;
 }
 
 export interface PadControlsProps {
@@ -57,22 +59,33 @@ function KeyScaleOctaveControls({
   showScale = true,
   showOctave = true,
   allowedScales,
+  genre,
 }: KeyScaleOctaveControlsProps) {
+  const keyMatches = genre ? isKeyMatch(genre, selectedKey) : false;
+  const scaleMatches = genre ? isScaleMatch(genre, selectedScale) : false;
+
   return (
     <div className="flex flex-wrap gap-2 w-0 min-w-full">
       {showKey && (
         <div className="flex items-center gap-1">
           <span className="text-xs whitespace-nowrap">Key:</span>
           <Select value={selectedKey} onValueChange={onKeyChange}>
-            <SelectTrigger className="w-16 h-7 text-xs">
+            <SelectTrigger className={`w-16 h-7 text-xs gap-1 ${keyMatches ? 'border-green-500' : ''}`}>
               <SelectValue placeholder="Key" />
             </SelectTrigger>
             <SelectContent>
-              {KEY_OPTIONS.map((key) => (
-                <SelectItem key={key.value} value={key.value}>
-                  {key.label}
-                </SelectItem>
-              ))}
+              {KEY_OPTIONS.map((key) => {
+                const matches = genre ? isKeyMatch(genre, key.value) : false;
+                return (
+                  <SelectItem key={key.value} value={key.value} textValue={key.label}>
+                    {matches && (
+                      <span className="bg-green-500/20 text-green-600 text-[10px] px-1 rounded">
+                        match
+                      </span>
+                    )}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>
@@ -81,18 +94,25 @@ function KeyScaleOctaveControls({
         <div className="flex items-center gap-1">
           <span className="text-xs whitespace-nowrap">Scale:</span>
           <Select value={selectedScale} onValueChange={onScaleChange}>
-            <SelectTrigger className="w-24 h-7 text-xs">
+            <SelectTrigger className={`w-24 h-7 text-xs gap-1 ${scaleMatches ? 'border-green-500' : ''}`}>
               <SelectValue placeholder="Scale" />
             </SelectTrigger>
             <SelectContent>
               {SCALE_TYPE_OPTIONS.filter(
                 (scaleType) =>
                   !allowedScales || allowedScales.includes(scaleType.value),
-              ).map((scaleType) => (
-                <SelectItem key={scaleType.value} value={scaleType.value}>
-                  {scaleType.label}
-                </SelectItem>
-              ))}
+              ).map((scaleType) => {
+                const matches = genre ? isScaleMatch(genre, scaleType.value) : false;
+                return (
+                  <SelectItem key={scaleType.value} value={scaleType.value} textValue={scaleType.label}>
+                    {matches && (
+                      <span className="bg-green-500/20 text-green-600 text-[10px] px-1 rounded">
+                        match
+                      </span>
+                    )}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>
