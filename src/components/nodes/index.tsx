@@ -322,6 +322,8 @@ export const nodeTypes = {
   'adsr-node': ADSRNode,
 };
 
+const nodeTypeCounters: Record<string, number> = {};
+
 export function createNodeByType({
   type,
   id,
@@ -335,10 +337,14 @@ export function createNodeByType({
 }): AppNode {
   const node = nodesConfig[type];
 
+  nodeTypeCounters[type] = (nodeTypeCounters[type] || 0) + 1;
+  const count = nodeTypeCounters[type];
+  const uniqueTitle = count === 1 ? node.title : `${node.title} ${count}`;
+
   const newNode = {
     id: id ?? nanoid(),
     data: data ?? {
-      title: node.title,
+      title: uniqueTitle,
       sound: node.sound,
       notes: node.notes,
       icon: node.icon,

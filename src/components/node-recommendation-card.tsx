@@ -214,7 +214,7 @@ export function NodeRecommendationCard({
             )}
             {state.type === 'apply-single' && (
               <Button size="sm" className="w-full text-xs" onClick={handleCTA}>
-                Apply to this node
+                Apply to {state.node.data.title || nodeTitle}
               </Button>
             )}
             {state.type === 'choose-node' && (

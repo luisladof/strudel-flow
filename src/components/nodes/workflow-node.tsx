@@ -37,6 +37,8 @@ function WorkflowNode({
   const { forceEvaluate } = useWorkflowRunner();
   const [show, setShow] = useState(false);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(data?.title || '');
 
   const { removeNode, edges, nodes, updateNodeData } = useAppStore(
     (state) => state
@@ -46,6 +48,27 @@ function WorkflowNode({
     ?.data?.state;
 
   const isPaused = nodeState === 'paused';
+
+  const handleDoubleClick = () => {
+    setEditTitle(data?.title || '');
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const trimmed = editTitle.trim();
+    if (trimmed) {
+      updateNodeData(id, { title: trimmed });
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSave();
+    } else if (e.key === 'Escape') {
+      setIsEditing(false);
+    }
+  };
 
   // Determine if this node is an instrument based on its type
   const isInstrument = type
@@ -96,7 +119,21 @@ function WorkflowNode({
         <NodeHeaderIcon>
           {IconComponent ? <IconComponent aria-label={data?.icon} /> : null}
         </NodeHeaderIcon>
-        <NodeHeaderTitle>{data?.title}</NodeHeaderTitle>
+        {isEditing ? (
+          <input
+            type="text"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            onBlur={handleSave}
+            onKeyDown={handleKeyDown}
+            className="flex-1 font-semibold bg-transparent border-none outline-none text-sm user-select-none"
+            autoFocus
+          />
+        ) : (
+          <NodeHeaderTitle onDoubleClick={handleDoubleClick}>
+            {data?.title}
+          </NodeHeaderTitle>
+        )}
         <NodeHeaderActions>
           {isInstrument && (
             <NodeHeaderAction

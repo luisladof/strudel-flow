@@ -45,7 +45,7 @@ export function ApplyRecommendationDialog({
     recommendation.patch,
     targetNode.data as Record<string, unknown>,
   );
-  const nodeTitle = nodesConfig[recommendation.nodeType]?.title ?? recommendation.nodeType;
+  const nodeTitle = targetNode.data.title || (nodesConfig[recommendation.nodeType]?.title ?? recommendation.nodeType);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
