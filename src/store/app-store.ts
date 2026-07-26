@@ -9,9 +9,10 @@ import {
   OnEdgesChange,
   OnNodesChange,
   Edge,
+  XYPosition,
 } from '@xyflow/react';
 
-import { AppNode } from '@/components/nodes';
+import { AppNode, WorkflowNodeData, AppNodeType, createNodeByType } from '@/components/nodes';
 import { initialEdges, initialNodes } from '@/data/workflow-data';
 
 export type AppState = {
@@ -33,6 +34,15 @@ export type AppActions = {
   onConnect: OnConnect;
   setTheme: (theme: string) => void;
   onEdgesChange: OnEdgesChange<Edge>;
+  applyRecommendation: (
+    nodeId: string,
+    patch: Partial<WorkflowNodeData>,
+  ) => void;
+  addRecommendedNode: (
+    type: AppNodeType,
+    patch: Partial<WorkflowNodeData>,
+    position?: XYPosition,
+  ) => string;
 };
 
 export type AppStore = AppState & AppActions;
@@ -95,6 +105,20 @@ export const useAppStore = create<AppStore>()(
             : node
         ),
       })),
+
+    applyRecommendation: (nodeId, patch) => {
+      get().updateNodeData(nodeId, patch as Record<string, unknown>);
+    },
+
+    addRecommendedNode: (type, patch, position) => {
+      const node = createNodeByType({
+        type,
+        position: position ?? { x: 200, y: 200 },
+        data: patch,
+      });
+      set({ nodes: [...get().nodes, node] });
+      return node.id;
+    },
   }))
 );
 

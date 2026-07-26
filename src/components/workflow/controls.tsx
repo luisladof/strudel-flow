@@ -1,13 +1,13 @@
 import { ZoomSlider } from '@/components/zoom-slider';
 import { Panel } from '@xyflow/react';
 import { useState } from 'react';
-import { NotebookText, Timer, Play, Pause, Menu, X } from 'lucide-react';
+import { NotebookText, Timer, Play, Pause, Menu, X, Sparkles } from 'lucide-react';
 import { PatternPanel } from '@/components/pattern-panel';
 import { useGlobalPlayback } from '@/hooks/use-global-playback';
 import { CPM } from '@/components/cpm';
 import { ShareUrlPopover } from '@/components/share-url-popover';
-import { PresetPopover } from '@/components/preset-popover';
 import { AppInfoPopover } from '@/components/app-info-popover';
+import { StyleGuidePanel } from '@/components/style-guide-panel';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 function PlayPauseButton() {
@@ -56,10 +56,23 @@ function CPMPanelButton({ onToggle }: { onToggle: () => void }) {
   );
 }
 
+function StyleGuideButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      className="p-2 rounded bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground transition"
+      onClick={onClick}
+      title="Style guide"
+    >
+      <Sparkles className="w-5 h-5" />
+    </button>
+  );
+}
+
 export function WorkflowControls() {
   const [isPatternPanelVisible, setPatternPanelVisible] = useState(false);
   const [isCpmPanelVisible, setCpmPanelVisible] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isStyleGuideOpen, setStyleGuideOpen] = useState(false);
   const isMobile = useIsMobile();
 
   if (isMobile) {
@@ -90,7 +103,7 @@ export function WorkflowControls() {
                 onToggle={() => setCpmPanelVisible((prev) => !prev)}
               />
 
-              <PresetPopover />
+              <StyleGuideButton onClick={() => setStyleGuideOpen(true)} />
 
               <ShareUrlPopover />
 
@@ -104,6 +117,8 @@ export function WorkflowControls() {
         <Panel position="bottom-right" className="flex flex-col gap-4">
           <PatternPanel isVisible={isPatternPanelVisible} />
         </Panel>
+
+        <StyleGuidePanel open={isStyleGuideOpen} onOpenChange={setStyleGuideOpen} />
       </>
     );
   }
@@ -121,7 +136,7 @@ export function WorkflowControls() {
 
         <CPMPanelButton onToggle={() => setCpmPanelVisible((prev) => !prev)} />
 
-        <PresetPopover />
+        <StyleGuideButton onClick={() => setStyleGuideOpen(true)} />
 
         <ShareUrlPopover />
 
@@ -133,6 +148,8 @@ export function WorkflowControls() {
       <Panel position="bottom-right" className="flex flex-col gap-4">
         <PatternPanel isVisible={isPatternPanelVisible} />
       </Panel>
+
+      <StyleGuidePanel open={isStyleGuideOpen} onOpenChange={setStyleGuideOpen} />
     </>
   );
 }

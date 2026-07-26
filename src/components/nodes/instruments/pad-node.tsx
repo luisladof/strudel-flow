@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store/app-store';
-import { useStrudelStore } from '@/store/strudel-store';
 import { getSchedulerNow } from '@/lib/strudel-clock';
 import WorkflowNode from '@/components/nodes/workflow-node';
 import { WorkflowNodeProps, AppNode } from '..';
@@ -19,7 +18,6 @@ function applyColumnModifier(pattern: string, modifier: CellState): string {
 export function PadNode({ id, data, type }: WorkflowNodeProps) {
   const [activeStep, setActiveStep] = useState(-1);
   const updateNodeData = useAppStore((state) => state.updateNodeData);
-  const genre = useStrudelStore((state) => state.genre);
 
   const steps = data.steps || 5;
 
@@ -122,7 +120,6 @@ export function PadNode({ id, data, type }: WorkflowNodeProps) {
                 updateNodeData(id, { selectedScaleType: scale }),
               octave,
               onOctaveChange: (oct) => updateNodeData(id, { octave: oct }),
-              genre,
             }}
             padControlsProps={{
               steps,

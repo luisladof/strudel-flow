@@ -1,5 +1,5 @@
 import { useCallback, useState, useMemo } from 'react';
-import { Play, Pause, Trash, NotebookText } from 'lucide-react';
+import { Play, Pause, Trash, NotebookText, Sparkles } from 'lucide-react';
 
 import {
   NodeHeaderTitle,
@@ -14,10 +14,14 @@ import { useWorkflowRunner } from '@/hooks/use-workflow-runner';
 import { iconMapping } from '@/data/icon-mapping';
 import { BaseNode } from '@/components/base-node';
 import { useAppStore } from '@/store/app-store';
+import { useStrudelStore } from '@/store/strudel-store';
 import PatternPopup from '@/components/pattern-popup';
 import { BaseHandle } from '@/components/base-handle';
 import { Position } from '@xyflow/react';
 import { findConnectedComponents } from '@/lib/graph-utils';
+import { getRecommendationsForNodeType, getGuideForGenre } from '@/data/genre-guides';
+import { NodeRecommendationCard } from '@/components/node-recommendation-card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 function WorkflowNode({
   id,
@@ -32,10 +36,12 @@ function WorkflowNode({
 }) {
   const { forceEvaluate } = useWorkflowRunner();
   const [show, setShow] = useState(false);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
 
   const { removeNode, edges, nodes, updateNodeData } = useAppStore(
     (state) => state
   );
+  const selectedGenre = useStrudelStore((state) => state.selectedGenre);
   const nodeState = useAppStore((state) => state.nodes.find((n) => n.id === id))
     ?.data?.state;
 
@@ -45,6 +51,12 @@ function WorkflowNode({
   const isInstrument = type
     ? nodesConfig[type]?.category === 'Instruments'
     : false;
+
+  // Check if there are style recommendations for this node type
+  const hasRecommendations =
+    selectedGenre && type
+      ? getRecommendationsForNodeType(selectedGenre, type).length > 0
+      : false;
 
   // Find all connected nodes for this group using findConnectedComponents
   const { connectedNodeIds } = useMemo(() => {
@@ -101,6 +113,38 @@ function WorkflowNode({
           >
             <NotebookText />
           </NodeHeaderAction>
+          {hasRecommendations && type && (
+            <Popover open={suggestionsOpen} onOpenChange={setSuggestionsOpen}>
+              <PopoverTrigger asChild>
+                <NodeHeaderAction
+                  label="Style suggestions"
+                  onClick={() => setSuggestionsOpen(!suggestionsOpen)}
+                >
+                  <Sparkles />
+                </NodeHeaderAction>
+              </PopoverTrigger>
+              <PopoverContent className="w-72 p-2" align="end" side="bottom">
+                <div className="flex flex-col gap-2">
+                  <div className="text-xs font-medium text-muted-foreground px-1">
+                    {getGuideForGenre(selectedGenre!)?.label} suggestions
+                  </div>
+                  {getRecommendationsForNodeType(selectedGenre!, type).map((rec) => (
+                    <NodeRecommendationCard
+                      key={rec.id}
+                      recommendation={rec}
+                      nodes={nodes}
+                      compact
+                      onApply={(nodeId) => {
+                        updateNodeData(nodeId, rec.patch as Record<string, unknown>);
+                        setSuggestionsOpen(false);
+                      }}
+                      onAdd={() => setSuggestionsOpen(false)}
+                    />
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
           <NodeHeaderAction
             onClick={onDelete}
             variant="ghost"

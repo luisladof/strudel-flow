@@ -1,7 +1,6 @@
 import WorkflowNode from '@/components/nodes/workflow-node';
 import { WorkflowNodeProps, AppNode } from '..';
 import { useAppStore } from '@/store/app-store';
-import { useStrudelStore } from '@/store/strudel-store';
 
 import { AccordionControls } from '@/components/accordion-controls';
 
@@ -49,7 +48,6 @@ const getChordNotes = (
 
 export function ChordNode({ id, data, type }: WorkflowNodeProps) {
   const updateNodeData = useAppStore((state) => state.updateNodeData);
-  const genre = useStrudelStore((state) => state.genre);
 
   // Use node data directly with defaults
   const selectedKey = data.selectedKey || 'C';
@@ -146,7 +144,6 @@ export function ChordNode({ id, data, type }: WorkflowNodeProps) {
             octave,
             onOctaveChange: (oct) => updateNodeData(id, { octave: oct }),
             allowedScales: ['major', 'minor'],
-            genre,
           }}
           chordControlsProps={{
             chordComplexity,
