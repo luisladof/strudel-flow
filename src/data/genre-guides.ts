@@ -493,6 +493,8 @@ export const GENRE_GUIDES: GenreGuide[] = [
           bank: 'RolandTR909',
         },
       },
+      },
+      },
       {
         id: 'ph-arp-rej-arpeggio',
         nodeType: 'arpeggiator-node',
@@ -988,6 +990,8 @@ export const GENRE_GUIDES: GenreGuide[] = [
           bank: 'RolandTR909',
         },
       },
+      },
+      },
       {
         id: 'at-arp-bells-motif',
         nodeType: 'arpeggiator-node',
@@ -1032,6 +1036,8 @@ export const GENRE_GUIDES: GenreGuide[] = [
           ],
           bank: 'RolandTR909',
         },
+      },
+      },
       },
       {
         id: 'at-lpf-energy-bass',

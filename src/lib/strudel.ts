@@ -119,7 +119,9 @@ export function generateOutput(
   if (result) {
     const bpm = parseInt(cpm) || 120;
     const beatsPerCycle = parseInt(bpc) || 4;
-    return `setcpm(${bpm}/${beatsPerCycle})\n${result}`;
+    // Load drum machine samples for bank() function
+    const samplesLoad = `samples('github:tidalcycles/dirt-samples')\n`;
+    return `${samplesLoad}setcpm(${bpm}/${beatsPerCycle})\n${result}`;
   }
 
   return result;
