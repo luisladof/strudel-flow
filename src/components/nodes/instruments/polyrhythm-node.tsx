@@ -132,7 +132,7 @@ PolyrhythmNode.strudelOutput = (node: AppNode, strudelString: string) => {
     if (data[activeKey] && data[patternKey]) {
       const sound = (data[soundKey] as string) || defaultSound;
       const bankCall = data.bank ? `.bank("${data.bank}")` : '';
-      patterns.push(`sound("${sound}").struct("${data[patternKey]}")${bankCall}`);
+      patterns.push(`sound("${sound}")${bankCall}.struct("${data[patternKey]}")`);
     }
   }
 

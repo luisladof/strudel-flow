@@ -56,8 +56,7 @@ export function DrumSoundsNode({ id, data }: WorkflowNodeProps) {
 DrumSoundsNode.strudelOutput = (node: AppNode, strudelString: string) => {
   if (!node.data.sound) return strudelString;
 
-  const soundCall = `sound("${node.data.sound}")`;
   const bankCall = node.data.bank ? `.bank("${node.data.bank}")` : '';
-  const result = `${soundCall}${bankCall}`;
-  return strudelString ? `${strudelString}.${result}` : result;
+  const soundCall = `sound("${node.data.sound}")${bankCall}`;
+  return strudelString ? `${strudelString}.${soundCall}` : soundCall;
 };

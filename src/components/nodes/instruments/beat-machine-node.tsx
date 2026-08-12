@@ -348,7 +348,7 @@ BeatMachineNode.strudelOutput = (node: AppNode, strudelString: string) => {
   const patterns = rows.map(
     (row) => {
       const bankCall = data.bank ? `.bank("${data.bank}")` : '';
-      return `sound("${row.instrument}").struct("${patternToString(row.pattern, modifiersEnabled ? (typeof (row as any).modifiers === 'object' ? (row as any).modifiers : {}) : {})}")${bankCall}`;
+      return `sound("${row.instrument}")${bankCall}.struct("${patternToString(row.pattern, modifiersEnabled ? (typeof (row as any).modifiers === 'object' ? (row as any).modifiers : {}) : {})}")`;
     }
   );
 
