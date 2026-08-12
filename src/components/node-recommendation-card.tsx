@@ -13,6 +13,7 @@ import nodesConfig from '@/components/nodes';
 import type { NodeRecommendation } from '@/data/genre-guides';
 import { formatPatchField } from '@/data/genre-guides';
 import { ApplyRecommendationDialog } from '@/components/apply-recommendation-dialog';
+import { DRUM_BANKS } from '@/data/sounds';
 
 type RecommendationState =
   | { type: 'add-node' }
@@ -30,6 +31,11 @@ function getCategoryLabel(nodeType: string): string {
   if (category === 'Synths') return 'Synth';
   if (category === 'Audio Effects' || category === 'Time Effects') return 'Effect';
   return category;
+}
+
+function getBankLabel(bank: string): string {
+  const found = DRUM_BANKS.find((b) => b.value === bank);
+  return found ? found.label : bank;
 }
 
 function getRecommendationState(
@@ -171,6 +177,11 @@ export function NodeRecommendationCard({
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
                 {getCategoryLabel(recommendation.nodeType)}
               </span>
+              {recommendation.patch.bank && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                  {getBankLabel(recommendation.patch.bank as string)}
+                </span>
+              )}
             </div>
             <div className="text-xs text-muted-foreground mt-0.5">
               {recommendation.description}

@@ -1,4 +1,4 @@
-import { Select, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { CellState, ModifierDropdown } from './pad-utils/modifiers';
 import WorkflowNode from '@/components/nodes/workflow-node';
@@ -6,7 +6,7 @@ import { WorkflowNodeProps, AppNode } from '..';
 import { useAppStore } from '@/store/app-store';
 import { Button } from '@/components/ui/button';
 import { PadButton } from './pad-utils/pad-button';
-import { DRUM_CATEGORIES } from '@/data/sounds';
+import { DRUM_CATEGORIES, DRUM_BANKS } from '@/data/sounds';
 import { CategorySelectItems } from '@/components/category-select-items';
 
 interface BeatMachineRow {
@@ -172,6 +172,11 @@ export function BeatMachineNode({ id, data, type }: WorkflowNodeProps) {
     updateNodeData(id, { modifiersEnabled: enabled });
   };
 
+  // Bank selector handler
+  const setBank = (bank: string) => {
+    updateNodeData(id, { bank: bank || undefined });
+  };
+
   const toggleStep = (rowIndex: number, step: number) => {
     const newRows = rows.map((row, rIndex) => {
       if (rIndex === rowIndex) {
@@ -303,6 +308,25 @@ export function BeatMachineNode({ id, data, type }: WorkflowNodeProps) {
                 className="scale-75"
               />
             </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs">Bank</span>
+              <Select
+                value={data.bank || ''}
+                onValueChange={setBank}
+              >
+                <SelectTrigger className="w-28 h-6 text-xs">
+                  <SelectValue placeholder="Default" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Default</SelectItem>
+                  {DRUM_BANKS.map((b) => (
+                    <SelectItem key={b.value} value={b.value}>
+                      {b.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </div>
@@ -322,8 +346,10 @@ BeatMachineNode.strudelOutput = (node: AppNode, strudelString: string) => {
 
   // If modifiers are disabled, ignore them in output
   const patterns = rows.map(
-    (row) =>
-      `sound("${row.instrument}").struct("${patternToString(row.pattern, modifiersEnabled ? (typeof (row as any).modifiers === 'object' ? (row as any).modifiers : {}) : {})}")`,
+    (row) => {
+      const bankCall = data.bank ? `.bank("${data.bank}")` : '';
+      return `sound("${row.instrument}").struct("${patternToString(row.pattern, modifiersEnabled ? (typeof (row as any).modifiers === 'object' ? (row as any).modifiers : {}) : {})}")${bankCall}`;
+    }
   );
 
   const validPatterns = patterns.filter(

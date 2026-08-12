@@ -48,6 +48,16 @@ export const DRUM_CATEGORIES: SoundCategory[] = [
 
 export const DRUM_OPTIONS = DRUM_CATEGORIES.flatMap((cat) => cat.options);
 
+export const DRUM_BANKS = [
+  { value: 'RolandTR808', label: 'Roland TR-808' },
+  { value: 'RolandTR909', label: 'Roland TR-909' },
+  { value: 'RolandTR707', label: 'Roland TR-707' },
+  { value: 'RolandTR606', label: 'Roland TR-606' },
+  { value: 'LinnDrum', label: 'Linn Drum' },
+  { value: 'LinnLM1', label: 'Linn LM-1' },
+  { value: 'OberheimDMX', label: 'Oberheim DMX' },
+];
+
 // --- All Sounds ---
 
 export const SOUND_OPTIONS = [

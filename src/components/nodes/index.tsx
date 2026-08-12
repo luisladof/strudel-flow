@@ -46,6 +46,7 @@ export type WorkflowNodeData = {
   label?: string;
   icon?: keyof typeof iconMapping;
   sound?: string;
+  bank?: string;
   state?: 'running' | 'paused' | 'stopped';
 
   // Pad node specific data

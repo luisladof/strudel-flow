@@ -7,8 +7,9 @@ import {
   SelectContent,
   SelectTrigger,
   SelectValue,
+  SelectItem,
 } from '@/components/ui/select';
-import { DRUM_CATEGORIES } from '@/data/sounds';
+import { DRUM_CATEGORIES, DRUM_BANKS } from '@/data/sounds';
 import { CategorySelectItems } from '@/components/category-select-items';
 
 const RHYTHM_PRESETS = [
@@ -99,6 +100,25 @@ export function PolyrhythmNode({ id, data, type }: WorkflowNodeProps) {
             </div>
           );
         })}
+        <div className="flex items-center gap-2 pt-2 border-t">
+          <span className="text-xs">Bank</span>
+          <Select
+            value={data.bank || ''}
+            onValueChange={(value) => updateNodeData(id, { bank: value || undefined })}
+          >
+            <SelectTrigger size="sm" className="w-28 h-6 text-xs">
+              <SelectValue placeholder="Default" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Default</SelectItem>
+              {DRUM_BANKS.map((b) => (
+                <SelectItem key={b.value} value={b.value}>
+                  {b.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </WorkflowNode>
   );
@@ -111,7 +131,8 @@ PolyrhythmNode.strudelOutput = (node: AppNode, strudelString: string) => {
   for (const { soundKey, patternKey, activeKey, defaultSound } of LAYERS) {
     if (data[activeKey] && data[patternKey]) {
       const sound = (data[soundKey] as string) || defaultSound;
-      patterns.push(`sound("${sound}").struct("${data[patternKey]}")`);
+      const bankCall = data.bank ? `.bank("${data.bank}")` : '';
+      patterns.push(`sound("${sound}").struct("${data[patternKey]}")${bankCall}`);
     }
   }
 

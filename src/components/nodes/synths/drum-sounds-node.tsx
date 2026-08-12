@@ -3,11 +3,12 @@ import {
   SelectContent,
   SelectTrigger,
   SelectValue,
+  SelectItem,
 } from '@/components/ui/select';
 import { useAppStore } from '@/store/app-store';
 import { WorkflowNodeProps, AppNode } from '..';
 import WorkflowNode from '@/components/nodes/workflow-node';
-import { DRUM_CATEGORIES } from '@/data/sounds';
+import { DRUM_CATEGORIES, DRUM_BANKS } from '@/data/sounds';
 import { CategorySelectItems } from '@/components/category-select-items';
 
 export function DrumSoundsNode({ id, data }: WorkflowNodeProps) {
@@ -17,6 +18,10 @@ export function DrumSoundsNode({ id, data }: WorkflowNodeProps) {
 
   const handleValueChange = (value: string) => {
     updateNodeData(id, { sound: value });
+  };
+
+  const handleBankChange = (value: string) => {
+    updateNodeData(id, { bank: value || undefined });
   };
 
   return (
@@ -30,6 +35,19 @@ export function DrumSoundsNode({ id, data }: WorkflowNodeProps) {
             <CategorySelectItems categories={DRUM_CATEGORIES} />
           </SelectContent>
         </Select>
+        <Select value={data.bank || ''} onValueChange={handleBankChange}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Bank: Default" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">Default</SelectItem>
+            {DRUM_BANKS.map((b) => (
+              <SelectItem key={b.value} value={b.value}>
+                {b.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </WorkflowNode>
   );
@@ -39,5 +57,7 @@ DrumSoundsNode.strudelOutput = (node: AppNode, strudelString: string) => {
   if (!node.data.sound) return strudelString;
 
   const soundCall = `sound("${node.data.sound}")`;
-  return strudelString ? `${strudelString}.${soundCall}` : soundCall;
+  const bankCall = node.data.bank ? `.bank("${node.data.bank}")` : '';
+  const result = `${soundCall}${bankCall}`;
+  return strudelString ? `${strudelString}.${result}` : result;
 };
