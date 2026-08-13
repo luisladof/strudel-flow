@@ -49,13 +49,21 @@ export const DRUM_CATEGORIES: SoundCategory[] = [
 export const DRUM_OPTIONS = DRUM_CATEGORIES.flatMap((cat) => cat.options);
 
 export const DRUM_BANKS = [
-  { value: 'RolandTR808', label: 'Roland TR-808' },
   { value: 'RolandTR909', label: 'Roland TR-909' },
+  { value: 'RolandTR808', label: 'Roland TR-808' },
   { value: 'RolandTR707', label: 'Roland TR-707' },
   { value: 'RolandTR606', label: 'Roland TR-606' },
+  { value: 'RolandTR626', label: 'Roland TR-626' },
+  { value: 'RolandTR505', label: 'Roland TR-505' },
   { value: 'LinnDrum', label: 'Linn Drum' },
   { value: 'LinnLM1', label: 'Linn LM-1' },
+  { value: 'Linn9000', label: 'Linn 9000' },
   { value: 'OberheimDMX', label: 'Oberheim DMX' },
+  { value: 'AkaiMPC60', label: 'Akai MPC60' },
+  { value: 'EmuSP12', label: 'Emu SP-12' },
+  { value: 'KorgM1', label: 'Korg M1' },
+  { value: 'BossDR660', label: 'Boss DR-660' },
+  { value: 'CasioRZ1', label: 'Casio RZ-1' },
 ];
 
 // --- All Sounds ---

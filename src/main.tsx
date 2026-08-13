@@ -13,6 +13,7 @@ initStrudel().then((repl: any) => {
   setSchedulerNow(() => repl.scheduler.now());
 });
 samples('github:tidalcycles/dirt-samples');
+samples('/strudel-drum-machines.json');
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
